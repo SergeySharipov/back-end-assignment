@@ -40,3 +40,15 @@ describe('GET /api/posts?tags=science', () => {
       expect(response.headers['content-type']).toContain('application/json')
     })
 })
+
+describe('GET /api/posts?tags=science,tech&sortBy=asdfghjkl', () => {
+  it('should return 400, content-type "application/json", "body.error" is "sortBy parameter is invalid"',
+    async function () {
+      const response = await api
+        .get('/api/posts?tags=science,tech&sortBy=asdfghjkl')
+
+      expect(response.status).toBe(400)
+      expect(response.headers['content-type']).toContain('application/json')
+      expect(response.body['error']).toBe('sortBy parameter is invalid')
+    })
+})

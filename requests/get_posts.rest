@@ -4,4 +4,6 @@ GET http://localhost:8080/api/posts?tags=science
 ###
 GET http://localhost:8080/api/posts?tags=science,tech
 ###
+GET http://localhost:8080/api/posts?tags=science,tech&sortBy=asdfghjkl
+###
 GET http://localhost:8080/api/posts?tags=science,tech&sortBy=popularity&direction=asc
