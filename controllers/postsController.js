@@ -1,26 +1,36 @@
-const sortByArr = ['id', 'reads', 'likes', 'popularity']
-const sortByDefault = 'id'
+const { validSortBy, sortByDefault, validDirections, directionDefault } = require('../constants/request.constants')
+const { status, validation } = require('../constants/response.constants')
 
-const directionsArr = ['asc', 'desc']
-const directionDefault = 'asc'
+function getKeyByValue(object, value) {
+  return Object.keys(object).find(key => object[key] === value)
+}
+
+const validateQueryParameters = (tags, sortBy) => {
+  // Handle tags required error
+  if (!tags) {
+    return validation.TAGS_MISSING_ERROR
+  }
+  // Handle sortBy is invalid error
+  if (!getKeyByValue(validSortBy, sortBy)) {
+    return validation.SORT_BY_INVALID_ERROR
+  }
+}
 
 const postsController = {
   getPosts: async (req, res) => {
     const { tags, sortBy = sortByDefault } = req.query
-    let { direction = directionDefault } = req.query
-    // Handle tags required error
-    if (!tags) {
-      res.status(400).json({ error: 'Tags parameter is required' })
-      return
-    }
-    // Handle sortBy is invalid error
-    if (!sortByArr.includes(sortBy)) {
-      res.status(400).json({ error: 'sortBy parameter is invalid' })
-      return
-    }
-    // Handle direction is invalid by using default value
-    if (!directionsArr.includes(direction)) {
+    let direction = req.query.direction
+
+    // Handle invalid direction by using default value
+    if (!direction || !getKeyByValue(validDirections, direction)) {
       direction = directionDefault
+    }
+
+    const validationError = validateQueryParameters(tags, sortBy)
+    // Handle validation errors
+    if (validationError) {
+      res.status(status.BAD_REQUEST_CODE).json({ error: validationError })
+      return
     }
 
     res.status(200).json({ tags, sortBy, direction })
