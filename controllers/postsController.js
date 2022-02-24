@@ -1,6 +1,8 @@
 const postsController = {
   getPosts: async (req, res) => {
-    res.status(200).json({ success: true })
+    const { tags, sortBy, direction } = req.query
+
+    res.status(200).json({ tags, sortBy, direction })
   }
 }
 
