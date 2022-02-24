@@ -1,5 +1,6 @@
 const { validSortBy, sortByDefault, validDirections, directionDefault } = require('../constants/request.constants')
 const { status, validation } = require('../constants/response.constants')
+const hatchwaysAPI = require('../api/hatchways')
 
 function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value)
@@ -14,6 +15,24 @@ const validateQueryParameters = (tags, sortBy) => {
   if (!getKeyByValue(validSortBy, sortBy)) {
     return validation.SORT_BY_INVALID_ERROR
   }
+}
+
+const getPostsFromHatchwaysAPI = async (tags) => {
+  const tagArr = tags.split(',')
+
+  const postsPromises = tagArr.map(async (tag) => {
+    const sourceData = await hatchwaysAPI.getPostsData(tag)
+    const posts = sourceData.data.posts
+    return posts
+  })
+
+  // eslint-disable-next-line no-undef
+  const postsPromisesResult = await Promise.all(postsPromises)
+
+  let allPosts = []
+  postsPromisesResult.forEach(element => allPosts.push(...element))
+
+  return allPosts
 }
 
 const postsController = {
@@ -33,7 +52,9 @@ const postsController = {
       return
     }
 
-    res.status(200).json({ tags, sortBy, direction })
+    const allPosts = await getPostsFromHatchwaysAPI(tags)
+
+    res.status(200).json({ posts: allPosts })
   }
 }
 
