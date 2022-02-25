@@ -54,12 +54,13 @@ describe('GET /api/posts?tags=science,tech&sortBy=asdfghjkl', () => {
 })
 
 describe('GET /api/posts?tags=science,tech&direction=asdfghjkl', () => {
-  it('should return 400, content-type "application/json"',
+  it('should return 400, content-type "application/json", "body.error" is "direction parameter is invalid"',
     async function () {
       const response = await api
         .get('/api/posts?tags=science,tech&direction=asdfghjkl')
 
-      expect(response.status).toBe(200)
+      expect(response.status).toBe(400)
       expect(response.headers['content-type']).toContain('application/json')
+      expect(response.body['error']).toBe('direction parameter is invalid')
     })
 })

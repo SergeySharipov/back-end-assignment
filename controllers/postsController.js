@@ -6,7 +6,7 @@ function getKeyByValue(object, value) {
   return Object.keys(object).find(key => object[key] === value)
 }
 
-const validateQueryParameters = (tags, sortBy) => {
+const validateQueryParameters = (tags, sortBy, direction) => {
   // Handle tags required error
   if (!tags) {
     return validation.TAGS_MISSING_ERROR
@@ -14,6 +14,10 @@ const validateQueryParameters = (tags, sortBy) => {
   // Handle sortBy is invalid error
   if (!getKeyByValue(validSortBy, sortBy)) {
     return validation.SORT_BY_INVALID_ERROR
+  }
+  // Handle direction is invalid error
+  if (!getKeyByValue(validDirections, direction)) {
+    return validation.DIRECTION_INVALID_ERROR
   }
 }
 
@@ -37,15 +41,9 @@ const getPostsFromHatchwaysAPI = async (tags) => {
 
 const postsController = {
   getPosts: async (req, res) => {
-    const { tags, sortBy = sortByDefault } = req.query
-    let direction = req.query.direction
+    const { tags, sortBy = sortByDefault, direction = directionDefault } = req.query
 
-    // Handle invalid direction by using default value
-    if (!direction || !getKeyByValue(validDirections, direction)) {
-      direction = directionDefault
-    }
-
-    const validationError = validateQueryParameters(tags, sortBy)
+    const validationError = validateQueryParameters(tags, sortBy, direction)
     // Handle validation errors
     if (validationError) {
       res.status(status.BAD_REQUEST_CODE).json({ error: validationError })
