@@ -31,12 +31,29 @@ const getPostsFromHatchwaysAPI = async (tags) => {
   })
 
   // eslint-disable-next-line no-undef
-  const postsPromisesResult = await Promise.all(postsPromises)
+  const postsResults = await Promise.all(postsPromises)
 
-  let allPosts = []
-  postsPromisesResult.forEach(element => allPosts.push(...element))
+  const uniqPosts =
+    postsResults.length === 1 ? postsResults[0] : getUniqPosts(postsResults)
 
-  return allPosts
+  return uniqPosts
+}
+
+const getUniqPosts = (postsResults) => {
+  let uniqPostsIds = []
+  let uniqStructuredPosts = []
+
+  postsResults.forEach(postsResult => {
+    postsResult.forEach(post => {
+
+      if (!uniqPostsIds.includes(post.id)) {
+        uniqStructuredPosts.push(post)
+        uniqPostsIds.push(post.id)
+      }
+    })
+  })
+
+  return uniqStructuredPosts
 }
 
 const postsController = {

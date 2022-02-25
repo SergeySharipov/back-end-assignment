@@ -2,6 +2,19 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 
+const arePostsUniq = (posts) => {
+  let uniqPostsIds = []
+
+  return posts.every(post => {
+    if (!uniqPostsIds.includes(post.id)) {
+      uniqPostsIds.push(post.id)
+    } else {
+      return false
+    }
+    return true
+  })
+}
+
 /*** GET /api/ping ***/
 
 describe('GET /api/ping', () => {
@@ -31,13 +44,27 @@ describe('GET /api/posts', () => {
 })
 
 describe('GET /api/posts?tags=science', () => {
-  it('should return 200, content-type "application/json"',
+  it('should return 200, content-type "application/json", "body.posts" has array of posts',
     async function () {
       const response = await api
         .get('/api/posts?tags=science')
 
       expect(response.status).toBe(200)
       expect(response.headers['content-type']).toContain('application/json')
+      expect(Array.isArray(response.body['posts'])).toBe(true)
+    })
+})
+
+describe('GET /api/posts?tags=science,tech', () => {
+  it('should return 200, content-type "application/json", "body.posts" has uniq array of posts',
+    async function () {
+      const response = await api
+        .get('/api/posts?tags=science,tech')
+
+      expect(response.status).toBe(200)
+      expect(response.headers['content-type']).toContain('application/json')
+      expect(Array.isArray(response.body['posts'])).toBe(true)
+      expect(arePostsUniq(response.body['posts'])).toBe(true)
     })
 })
 
