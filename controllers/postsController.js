@@ -21,7 +21,7 @@ const validateQueryParameters = (tags, sortBy, direction) => {
   }
 }
 
-const getPostsFromHatchwaysAPI = async (tags) => {
+const getPostsFromHatchwaysAPI = async (tags, sortBy, direction) => {
   const tagArr = tags.split(',')
 
   const postsPromises = tagArr.map(async (tag) => {
@@ -36,7 +36,18 @@ const getPostsFromHatchwaysAPI = async (tags) => {
   const uniqPosts =
     postsResults.length === 1 ? postsResults[0] : getUniqPosts(postsResults)
 
-  return uniqPosts
+  const isSortAcsending = direction === validDirections.ASC
+  const sortedPosts = uniqPosts.sort(sortByKeyCompFunc(sortBy, isSortAcsending))
+
+  return sortedPosts
+}
+
+const sortByKeyCompFunc = (key, isAcsending) => {
+  if (isAcsending) {
+    return (p1, p2) => p1[key] - p2[key]
+  } else {
+    return (p1, p2) => p2[key] - p1[key]
+  }
 }
 
 const getUniqPosts = (postsResults) => {
@@ -67,7 +78,7 @@ const postsController = {
       return
     }
 
-    const allPosts = await getPostsFromHatchwaysAPI(tags)
+    const allPosts = await getPostsFromHatchwaysAPI(tags, sortBy, direction)
 
     res.status(200).json({ posts: allPosts })
   }
