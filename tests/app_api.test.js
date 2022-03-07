@@ -32,108 +32,99 @@ const arePostsSortedByKey = (posts, key, isAcsending) => {
 /*** GET /api/ping ***/
 
 describe('GET /api/ping', () => {
-  it('should return 200',
-    async function () {
-      const response = await api
-        .get('/api/ping')
+  let response
 
+  beforeAll(async () => {
+    response = await api
+      .get('/api/ping')
+  })
+
+  it('should return 200',
+    async () => {
       expect(response.status).toBe(200)
     })
 
   it('should return content-type "application/json"',
-    async function () {
-      const response = await api
-        .get('/api/ping')
-
+    async () => {
       expect(response.headers['content-type']).toContain('application/json')
     })
 
   it('should return "body.success" is true',
-    async function () {
-      const response = await api
-        .get('/api/ping')
-
+    async () => {
       expect(response.body['success']).toBe(true)
     })
-
 })
 
 /*** GET /api/posts ***/
 
 describe('GET /api/posts', () => {
-  it('should return 400',
-    async function () {
-      const response = await api
-        .get('/api/posts')
+  let response
 
+  beforeAll(async () => {
+    response = await api
+      .get('/api/posts')
+  })
+
+  it('should return 400',
+    async () => {
       expect(response.status).toBe(400)
     })
 
   it('should return content-type "application/json"',
-    async function () {
-      const response = await api
-        .get('/api/posts')
-
+    async () => {
       expect(response.headers['content-type']).toContain('application/json')
     })
 
   it('should return "body.error" is "Tags parameter is required"',
-    async function () {
-      const response = await api
-        .get('/api/posts')
-
+    async () => {
       expect(response.body['error']).toBe('Tags parameter is required')
     })
 })
 
 describe('GET /api/posts?tags=science', () => {
-  it('should return 200',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science')
+  let response
 
+  beforeAll(async () => {
+    response = await api
+      .get('/api/posts?tags=science')
+  })
+
+  it('should return 200',
+    async () => {
       expect(response.status).toBe(200)
     })
 
   it('should return content-type "application/json"',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science')
-
+    async () => {
       expect(response.headers['content-type']).toContain('application/json')
     })
 
-  it('should return "body.posts" has array of posts',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science')
-
+  it('should return "body.posts" with array of posts',
+    async () => {
       expect(Array.isArray(response.body['posts'])).toBe(true)
     })
 })
 
 describe('GET /api/posts?tags=science,tech', () => {
-  it('should return 200',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech')
+  let response
 
+  beforeAll(async () => {
+    response = await api
+      .get('/api/posts?tags=science,tech')
+  })
+
+  it('should return 200',
+    async () => {
       expect(response.status).toBe(200)
     })
 
   it('should return content-type "application/json"',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech')
-
+    async () => {
       expect(response.headers['content-type']).toContain('application/json')
     })
 
-  it('should return "body.posts" has uniq sorted by id(asc) array of posts',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech')
-
+  it('should return "body.posts" with uniq sorted by id(asc) array of posts',
+    async () => {
       expect(Array.isArray(response.body['posts'])).toBe(true)
       expect(arePostsUniq(response.body['posts'])).toBe(true)
       const isAcsending = true
@@ -143,27 +134,25 @@ describe('GET /api/posts?tags=science,tech', () => {
 })
 
 describe('GET /api/posts?tags=science,tech&direction=desc', () => {
-  it('should return 200',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&direction=desc')
+  let response
 
+  beforeAll(async () => {
+    response = await api
+      .get('/api/posts?tags=science,tech&direction=desc')
+  })
+
+  it('should return 200',
+    async () => {
       expect(response.status).toBe(200)
     })
 
   it('should return content-type "application/json"',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&direction=desc')
-
+    async () => {
       expect(response.headers['content-type']).toContain('application/json')
     })
 
-  it('should return "body.posts" has uniq sorted by id(desc) array of posts',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&direction=desc')
-
+  it('should return "body.posts" with uniq sorted by id(desc) array of posts',
+    async () => {
       expect(Array.isArray(response.body['posts'])).toBe(true)
       expect(arePostsUniq(response.body['posts'])).toBe(true)
       const isAcsending = false
@@ -173,27 +162,25 @@ describe('GET /api/posts?tags=science,tech&direction=desc', () => {
 })
 
 describe('GET /api/posts?tags=science,tech&sortBy=popularity&direction=asc', () => {
-  it('should return 200',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&sortBy=popularity&direction=asc')
+  let response
 
+  beforeAll(async () => {
+    response = await api
+      .get('/api/posts?tags=science,tech&sortBy=popularity&direction=asc')
+  })
+
+  it('should return 200',
+    async () => {
       expect(response.status).toBe(200)
     })
 
   it('should return content-type "application/json"',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&sortBy=popularity&direction=asc')
-
+    async () => {
       expect(response.headers['content-type']).toContain('application/json')
     })
 
-  it('should return "body.posts" has uniq sorted by popularity(asc) array of posts',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&sortBy=popularity&direction=asc')
-
+  it('should return "body.posts" with uniq sorted by popularity(asc) array of posts',
+    async () => {
       expect(Array.isArray(response.body['posts'])).toBe(true)
       expect(arePostsUniq(response.body['posts'])).toBe(true)
       const isAcsending = true
@@ -203,27 +190,25 @@ describe('GET /api/posts?tags=science,tech&sortBy=popularity&direction=asc', () 
 })
 
 describe('GET /api/posts?tags=science,tech&sortBy=popularity&direction=desc', () => {
-  it('should return 200',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&sortBy=popularity&direction=desc')
+  let response
 
+  beforeAll(async () => {
+    response = await api
+      .get('/api/posts?tags=science,tech&sortBy=popularity&direction=desc')
+  })
+
+  it('should return 200',
+    async () => {
       expect(response.status).toBe(200)
     })
 
   it('should return content-type "application/json"',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&sortBy=popularity&direction=desc')
-
+    async () => {
       expect(response.headers['content-type']).toContain('application/json')
     })
 
-  it('should return "body.posts" has uniq sorted by popularity(desc) array of posts',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&sortBy=popularity&direction=desc')
-
+  it('should return "body.posts" with uniq sorted by popularity(desc) array of posts',
+    async () => {
       expect(Array.isArray(response.body['posts'])).toBe(true)
       expect(arePostsUniq(response.body['posts'])).toBe(true)
       const isAcsending = false
@@ -233,53 +218,49 @@ describe('GET /api/posts?tags=science,tech&sortBy=popularity&direction=desc', ()
 })
 
 describe('GET /api/posts?tags=science,tech&sortBy=asdfghjkl', () => {
-  it('should return 400',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&sortBy=asdfghjkl')
+  let response
 
+  beforeAll(async () => {
+    response = await api
+      .get('/api/posts?tags=science,tech&sortBy=asdfghjkl')
+  })
+
+  it('should return 400',
+    async () => {
       expect(response.status).toBe(400)
     })
 
   it('should return content-type "application/json"',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&sortBy=asdfghjkl')
-
+    async () => {
       expect(response.headers['content-type']).toContain('application/json')
     })
 
   it('should return "body.error" is "sortBy parameter is invalid"',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&sortBy=asdfghjkl')
-
+    async () => {
       expect(response.body['error']).toBe('sortBy parameter is invalid')
     })
 })
 
 describe('GET /api/posts?tags=science,tech&direction=asdfghjkl', () => {
-  it('should return 400',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&direction=asdfghjkl')
+  let response
 
+  beforeAll(async () => {
+    response = await api
+      .get('/api/posts?tags=science,tech&direction=asdfghjkl')
+  })
+
+  it('should return 400',
+    async () => {
       expect(response.status).toBe(400)
     })
 
   it('should return content-type "application/json"',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&direction=asdfghjkl')
-
+    async () => {
       expect(response.headers['content-type']).toContain('application/json')
     })
 
   it('should return "body.error" is "direction parameter is invalid"',
-    async function () {
-      const response = await api
-        .get('/api/posts?tags=science,tech&direction=asdfghjkl')
-
+    async () => {
       expect(response.body['error']).toBe('direction parameter is invalid')
     })
 })
